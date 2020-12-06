@@ -1,0 +1,126 @@
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { AuthService } from "../auth.service";
+import { Router } from "@angular/router";
+import { ApiService } from "../shared/api.service";
+import { Request } from "../shared/request";
+import { RequestResponse } from "../shared/requestResponse";
+
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+} from "@angular/forms";
+import { User } from '../shared/user.model';
+@Component({
+  selector: "app-login",
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.css"],
+})
+export class LoginComponent implements OnInit {
+  constructor(
+    public authService: AuthService,
+    public fb: FormBuilder,
+      private router: Router,
+      private api: ApiService
+  ) {}
+
+  selectedOption = "User";
+  loginForm: FormGroup;
+    success: boolean;
+    request = new Request();
+    requestResponse = new RequestResponse();
+    token: string;
+    //users: User[] = [];
+  users:User[]=[
+    {id:1,firstName:"Vlad",lastName:"Pasarin",mail:"vlad@gmail.com",password:"vlad1998"},
+      { id: 2, firstName: "Florin", lastName: "Stan", mail: "florin@yahoo.com",password:"florinel99"},
+      { id: 3, firstName: "Eusebiu", lastName: "Timofte", mail: "sebi@yahoo.com",password:"eusebi98"}
+];
+  ngOnInit() {
+    this.loginForm = this.fb.group({
+      mail: [null, Validators.required],
+      password: [null, Validators.required],
+    });
+      /*
+      this.api.getUsers().subscribe((data: User[]) => {
+          for (let i = 0; i < data.length; i++) {
+              this.api.getUser(data[i].id).subscribe((info: User) => {
+                  info.id = data[i].id;
+                  this.users.push(info);
+              });
+          }
+      });
+      */
+  }
+
+  isFieldValid(field: string) {
+    return (
+      !this.loginForm.get(field).valid && this.loginForm.get(field).touched
+    );
+  }
+
+  displayFieldCss(field: string) {
+    return {
+      "has-error": this.isFieldValid(field),
+      "has-feedback": this.isFieldValid(field),
+    };
+  }
+  get f() {
+    return this.loginForm.controls;
+  }
+  onSubmit() {
+    if (this.loginForm.valid) {
+      this.success = true;
+      setTimeout(() => {
+        this.success = null;
+      }, 3000);
+      console.log("loginForm submitted");
+    } else {
+      this.success = false;
+      setTimeout(() => {
+        this.success = null;
+      }, 3000);
+      this.validateAllFormFields(this.loginForm);
+      }
+      console.log(this.users);
+    const user = this.users.find(
+      (x) =>
+        x.mail === this.f.mail.value &&
+        x.password === this.f.password.value
+    );
+      if (!user) this.success = false;
+      else {
+          this.request.mail = user.mail;
+          this.request.password = user.password;
+          this.api.getLoginToken(this.request).subscribe((data) => {
+              this.requestResponse = data.body as RequestResponse;
+              console.log(this.requestResponse.token)
+          });
+          localStorage.setItem("isLogged", "true");
+          localStorage.setItem("firstName", user.firstName);
+     
+      setTimeout(() => {
+          this.router.navigate(["/profile"],
+              { queryParams: { firstName: user.firstName } });
+      }, 2000);
+   
+   }
+    
+    console.log(user);
+  }
+  validateAllFormFields(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((field) => {
+      console.log(field);
+      const control = formGroup.get(field);
+      if (control instanceof FormControl) {
+        control.markAsTouched({ onlySelf: true });
+      } else if (control instanceof FormGroup) {
+        this.validateAllFormFields(control);
+      }
+    });
+  }
+  reset() {
+    this.loginForm.reset();
+  }
+}
