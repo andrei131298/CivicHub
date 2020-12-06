@@ -83,31 +83,37 @@ export class LoginComponent implements OnInit {
       }, 3000);
       this.validateAllFormFields(this.loginForm);
       }
-      console.log(this.users);
-    const user = this.users.find(
-      (x) =>
-        x.mail === this.f.mail.value &&
-        x.password === this.f.password.value
-    );
-      if (!user) this.success = false;
-      else {
-          this.request.mail = user.mail;
-          this.request.password = user.password;
-          this.api.getLoginToken(this.request).subscribe((data) => {
-              this.requestResponse = data.body as RequestResponse;
-              console.log(this.requestResponse.token)
-          });
-          localStorage.setItem("isLogged", "true");
-          localStorage.setItem("firstName", user.firstName);
-     
-      setTimeout(() => {
-          this.router.navigate(["/profile"],
-              { queryParams: { firstName: user.firstName } });
-      }, 2000);
-   
-   }
+      //console.log(this.users);
+      this.request.mail = this.f.mail.value;
+      this.request.password = this.f.password.value;
+      this.api.getLoginToken(this.request).subscribe((data) => {
+          this.requestResponse = data.body as RequestResponse;
+          console.log(this.requestResponse.token)
+      }, error => {
+          console.log("Error while validating token");
+
+      },
+          () => {
+              console.log(this.requestResponse.token);
+
+              if (!this.requestResponse.token) this.success = false;
+              else {
+
+                  localStorage.setItem("isLogged", "true");
+                  //localStorage.setItem("firstName", user.firstName);
+
+                  setTimeout(() => {
+                      this.router.navigate(["/profile"],
+                          { queryParams: { /*firstName: user.firstName*/ } });
+                  }, 1500);
+
+              }
+              
+
+          }
+);
+      
     
-    console.log(user);
   }
   validateAllFormFields(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((field) => {
