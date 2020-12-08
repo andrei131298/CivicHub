@@ -58,8 +58,8 @@ export class SignUpComponent implements OnInit {
         console.log("addUserForm submitted");
         this.api.addUser(this.addUserForm.value).subscribe();
         console.log(this.addUserForm.value);
-      localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("firstName", this.f.firstName.value);
+        sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('firstName', this.f.firstName.value);
 
         this.router.navigate(["/home"]);
     } else {

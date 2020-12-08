@@ -8,8 +8,8 @@ import { Router } from "@angular/router";
   styleUrls: ["./header.component.css"],
 })
 export class HeaderComponent implements OnInit {
-  storage = localStorage.getItem("isLoggedIn");
-  firstName: string;
+
+    firstName: string;
   logged:string;
   userId:number;
 
@@ -20,10 +20,11 @@ export class HeaderComponent implements OnInit {
 
   constructor(public authService: AuthService, private router: Router) {}
 
-  ngOnInit() {
-    this.firstName = localStorage.getItem("firstName");
-    this.logged = localStorage.getItem("isLogged");
-    this.userId = parseInt(localStorage.getItem("userId"));
+    ngOnInit() {
+        this.firstName = sessionStorage.getItem('firstName');
+        this.logged = sessionStorage.getItem('isLogged');
+        console.log(this.logged);
+        this.userId = parseInt(sessionStorage.getItem('userId'));
   }
   checkLoggedIn(){
     if (this.logged == 'true'){

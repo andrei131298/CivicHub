@@ -19,7 +19,7 @@
               <div class="dropdown-content">
               <div class="content" (click)="checkLoggedIn()">{{firstName}}</div>
               <div *ngIf="logged == 'true'" class="content" (click)="logout()">Logout</div>
-              <div *ngIf="logged == 'false'" class="content" routerLink="/login">Login</div>
+              <div *ngIf="logged == 'false' || logged==null" class="content" routerLink="/login">Login</div>
               </div>
           </a>
           

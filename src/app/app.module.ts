@@ -58,7 +58,7 @@ import { PetitionProfileComponent } from './petition-profile/petition-profile.co
      SidebarModule.forRoot(),
   ],
   exports: [],
-  bootstrap: [AppComponent],
+    bootstrap: [AppComponent],
   providers: [AuthGuard],
 })
 export class AppModule {}

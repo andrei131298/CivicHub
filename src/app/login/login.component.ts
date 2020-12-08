@@ -42,16 +42,7 @@ export class LoginComponent implements OnInit {
       mail: [null, Validators.required],
       password: [null, Validators.required],
     });
-      /*
-      this.api.getUsers().subscribe((data: User[]) => {
-          for (let i = 0; i < data.length; i++) {
-              this.api.getUser(data[i].id).subscribe((info: User) => {
-                  info.id = data[i].id;
-                  this.users.push(info);
-              });
-          }
-      });
-      */
+      
   }
 
   isFieldValid(field: string) {
@@ -99,13 +90,13 @@ export class LoginComponent implements OnInit {
               if (!this.requestResponse.token) this.success = false;
               else {
 
-                  localStorage.setItem("isLogged", "true");
+                  sessionStorage.setItem('isLogged', 'true');
                   //localStorage.setItem("firstName", user.firstName);
 
                   setTimeout(() => {
                       this.router.navigate(["/profile"],
                           { queryParams: { /*firstName: user.firstName*/ } });
-                  }, 1500);
+                  }, 1000);
 
               }
               
